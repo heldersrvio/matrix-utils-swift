@@ -66,14 +66,14 @@ extension Matrix {
         let m2Size = (m2.count, m2.first!.count)
         return [Int](0..<m1Size.0).map { rowIndex in
             [Int](0..<m2Size.1).map { columnIndex in
-                [Int](0..<m2Size.1).reduce(0) { previousValue, increment in
-                    previousValue + m1[rowIndex][increment] * m2[increment][rowIndex]
+                [Int](0..<m2Size.0).reduce(0) { previousValue, increment in
+                    previousValue + m1[rowIndex][increment] * m2[increment][columnIndex]
                 }
             }
         }
     }
     
-    static func makeIdentity(of size: Int) -> Matrix {
+    static func makeIdentity(ofSize size: Int) -> Matrix {
         return [Int](0..<size).map { rowIndex in
             [Int](0..<size).map { columnIndex in
                 rowIndex == columnIndex ? 1 : 0
