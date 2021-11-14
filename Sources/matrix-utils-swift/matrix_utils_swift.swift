@@ -1,9 +1,9 @@
-typealias MatrixIndex = (Int, Int)
-typealias MatrixSize = (Int, Int)
-typealias EnumeratedMatrix = [(MatrixIndex, Double)]
-typealias Matrix = [[Double]]
+public typealias MatrixIndex = (Int, Int)
+public typealias MatrixSize = (Int, Int)
+public typealias EnumeratedMatrix = [(MatrixIndex, Double)]
+public typealias Matrix = [[Double]]
 
-extension Matrix {
+public extension Matrix {
     var isSymmetric: Bool {
         return self.allSatisfy { $0.count == self.first?.count }
     }
