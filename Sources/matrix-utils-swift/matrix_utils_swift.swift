@@ -41,20 +41,20 @@ public extension Matrix {
         return (maxIndices.0 + 1, maxIndices.1 + 1)
     }
     
-    private static func buildMatrix(from enumeratedMatrix: EnumeratedMatrix) -> Matrix {
+    private static func applyElementToElement(_ operation: ((Double, Double) -> Double), from m1: Matrix, to m2: Matrix) -> Matrix {
+        let enumeratedResult = m1.enumerated().map { index, element in
+            (index, operation(element, m2[index.0][index.1]))
+        }
+        return buildMatrix(from: enumeratedResult)
+    }
+    
+    static func buildMatrix(from enumeratedMatrix: EnumeratedMatrix) -> Matrix {
         let matrixSize = getMatrixSize(of: enumeratedMatrix)
         return [Int](0..<matrixSize.0).map { rowIndex in
             [Int](0..<matrixSize.1).map { columnIndex in
                 seek((rowIndex, columnIndex), at: enumeratedMatrix)
             }
         }
-    }
-    
-    private static func applyElementToElement(_ operation: ((Double, Double) -> Double), from m1: Matrix, to m2: Matrix) -> Matrix {
-        let enumeratedResult = m1.enumerated().map { index, element in
-            (index, operation(element, m2[index.0][index.1]))
-        }
-        return buildMatrix(from: enumeratedResult)
     }
     
     static func +(_ m1: Matrix, _ m2: Matrix) -> Matrix {
