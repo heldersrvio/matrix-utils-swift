@@ -4,6 +4,10 @@ typealias EnumeratedMatrix = [(MatrixIndex, Double)]
 typealias Matrix = [[Double]]
 
 extension Matrix {
+    var isSymmetric: Bool {
+        return self.allSatisfy { $0.count == self.first?.count }
+    }
+    
     func enumerated() -> [(MatrixIndex, Double)] {
         guard let columnCount = self.first?.count else {
             return []
