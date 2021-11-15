@@ -4,8 +4,62 @@ public typealias EnumeratedMatrix = [(MatrixIndex, Double)]
 public typealias Matrix = [[Double]]
 
 public extension Matrix {
+    var isSquare: Bool {
+        return self.allSatisfy { $0.count == self.count }
+    }
+    
+    var isZero: Bool {
+        return self.allSatisfy { row in row.allSatisfy { $0 == 0.0 } }
+    }
+    
+    var isColumn: Bool {
+        return self.allSatisfy { $0.count == 1 }
+    }
+    
+    var isRow: Bool {
+        return self.count == 1
+    }
+    
+    var isIdentity: Bool {
+        return self == Matrix.makeIdentity(ofSize: self.count)
+    }
+    
+    var isUpperTriangular: Bool {
+        return self.isSquare && self.enumerated().allSatisfy { indexValuePair in
+            let rowIndex = indexValuePair.0.0
+            let columnIndex = indexValuePair.0.1
+            let value = indexValuePair.1
+            
+            return rowIndex <= columnIndex || value == 0.0
+        }
+    }
+    
+    var isLowerTriangular: Bool {
+        return self.isSquare && self.enumerated().allSatisfy { indexValuePair in
+            let rowIndex = indexValuePair.0.0
+            let columnIndex = indexValuePair.0.1
+            let value = indexValuePair.1
+            
+            return rowIndex >= columnIndex || value == 0.0
+        }
+    }
+    
+    var isTriangular: Bool {
+        return self.isUpperTriangular || self.isLowerTriangular
+    }
+    
+    var isDiagonal: Bool {
+        return self.isUpperTriangular && self.isLowerTriangular
+    }
+    
     var isSymmetric: Bool {
-        return self.allSatisfy { $0.count == self.first?.count }
+        return self.isSquare && self.enumerated().allSatisfy { indexValuePair in
+            let rowIndex = indexValuePair.0.0
+            let columnIndex = indexValuePair.0.1
+            let value = indexValuePair.1
+            
+            return rowIndex != columnIndex || value == self[columnIndex][rowIndex]
+        }
     }
     
     func enumerated() -> [(MatrixIndex, Double)] {
@@ -57,12 +111,28 @@ public extension Matrix {
         }
     }
     
+    static func ==(_ m1: Matrix, _ m2: Matrix) -> Bool {
+        let enumeratedM1 = m1.enumerated()
+        let enumeratedM2 = m2.enumerated()
+        return enumeratedM1.allSatisfy {
+            seek($0.0, at: enumeratedM2) == $0.1
+        }
+    }
+    
+    static func !=(_ m1: Matrix, _ m2: Matrix) -> Bool {
+        return !(m1 == m2)
+    }
+    
     static func +(_ m1: Matrix, _ m2: Matrix) -> Matrix {
         return applyElementToElement(+, from: m1, to: m2)
     }
     
     static func -(_ m1: Matrix, _ m2: Matrix) -> Matrix {
         return applyElementToElement(-, from: m1, to: m2)
+    }
+    
+    static func *(_ n: Double, _ matrix: Matrix) -> Matrix {
+        return matrix.map { row in row.map { n * $0 } }
     }
     
     static func *(_ m1: Matrix, _ m2: Matrix) -> Matrix {
